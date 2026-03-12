@@ -65,6 +65,37 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     /* =========================================
+       2B. HAMBURGER MOBILE DRAWER
+       ========================================= */
+    const hamburgerBtn = document.getElementById('hamburger-btn');
+    const mobileDrawer = document.getElementById('mobile-drawer');
+    const drawerOverlay = document.getElementById('drawer-overlay');
+    const drawerClose = document.getElementById('drawer-close');
+
+    function openDrawer() {
+        mobileDrawer.classList.add('open');
+        hamburgerBtn.classList.add('open');
+        hamburgerBtn.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeDrawer() {
+        mobileDrawer.classList.remove('open');
+        hamburgerBtn.classList.remove('open');
+        hamburgerBtn.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+    }
+
+    if (hamburgerBtn) hamburgerBtn.addEventListener('click', openDrawer);
+    if (drawerClose) drawerClose.addEventListener('click', closeDrawer);
+    if (drawerOverlay) drawerOverlay.addEventListener('click', closeDrawer);
+
+    // Close drawer when any drawer link is clicked
+    document.querySelectorAll('.drawer-links a, .drawer-cta').forEach(link => {
+        link.addEventListener('click', closeDrawer);
+    });
+
+    /* =========================================
        3. INTERSECTION OBSERVER (Scroll Reveals)
        ========================================= */
     // Top-tier scroll animation logic
@@ -289,16 +320,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnConfirmPayment) {
         btnConfirmPayment.addEventListener('click', () => {
             btnConfirmPayment.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...';
-            // Simulate processing
             setTimeout(() => {
                 modal.classList.remove('active');
                 document.body.style.overflow = '';
-                usdtPurchaseForm.reset();
-                usdtFeeDisplay.textContent = '$0.00';
-                btnCancelUsdt.click();
+                if (usdtPurchaseForm) {
+                    usdtPurchaseForm.reset();
+                    if (usdtFeeDisplay) usdtFeeDisplay.textContent = '$0.00';
+                }
                 alert("Payment processing initiated. You will be notified once it is confirmed on the blockchain.");
                 btnConfirmPayment.innerHTML = 'I Have Made The Payment';
-            }, 2000);//https://www.instagram.com/doomsuniverse_?igsh=emlmaW1oNHgwNzJ2
+            }, 2000);
         });
     }
 
@@ -370,7 +401,7 @@ if (cardBalanceInput) {
     cardBalanceInput.addEventListener('input', (e) => {
         const balance = parseFloat(e.target.value);
         if (!isNaN(balance) && balance > 0) {
-            const fee = (balance / 100) * 30;
+            const fee = (balance / 100) * 35;
             cardCalculatedFee.textContent = `$${fee.toFixed(2)}`;
         } else {
             cardCalculatedFee.textContent = '$0.00';
@@ -415,7 +446,7 @@ if (cardOrderForm) {
         e.preventDefault();
         const balance = parseFloat(cardBalanceInput.value);
         if (!isNaN(balance) && balance > 0) {
-            const fee = (balance / 100) * 30;
+            const fee = (balance / 100) * 35;
 
             // Hide card modal
             cardOrderModal.classList.remove('active');
@@ -427,7 +458,98 @@ if (cardOrderForm) {
             const usdtModal = document.getElementById('usdt-modal');
             if (usdtModal) {
                 usdtModal.classList.add('active');
-                // Body overflow is already hidden from previous modal
+            }
+        }
+    });
+}
+
+/* =========================================
+   9. GIFT CARD MODAL LOGIC
+   ========================================= */
+const giftCardModal = document.getElementById('gift-card-modal');
+const btnBuyGiftCard = document.getElementById('btn-buy-giftcard');
+const closeGiftModal = document.getElementById('close-gift-modal');
+const cancelGiftModal = document.getElementById('cancel-gift-modal');
+const giftCardForm = document.getElementById('gift-card-form');
+const giftAmountInput = document.getElementById('gift-amount');
+const giftFeeDisplay = document.getElementById('gift-fee');
+const giftBrandGrid = document.getElementById('gift-brand-grid');
+
+let selectedGiftBrand = '';
+
+function openGiftCardModal() {
+    if (giftCardModal) {
+        selectedGiftBrand = '';
+        if (giftCardForm) giftCardForm.reset();
+        if (giftFeeDisplay) giftFeeDisplay.textContent = '$0.00';
+        document.querySelectorAll('.gift-brand-card').forEach(c => c.classList.remove('selected'));
+        giftCardModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+if (btnBuyGiftCard) btnBuyGiftCard.addEventListener('click', openGiftCardModal);
+
+function closeGiftCardModal() {
+    if (giftCardModal) {
+        giftCardModal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+}
+
+if (closeGiftModal) closeGiftModal.addEventListener('click', closeGiftCardModal);
+if (cancelGiftModal) cancelGiftModal.addEventListener('click', closeGiftCardModal);
+
+// Close on overlay click
+if (giftCardModal) {
+    giftCardModal.addEventListener('click', (e) => {
+        if (e.target === giftCardModal) closeGiftCardModal();
+    });
+}
+
+// Brand selection
+if (giftBrandGrid) {
+    giftBrandGrid.querySelectorAll('.gift-brand-card').forEach(card => {
+        card.addEventListener('click', () => {
+            giftBrandGrid.querySelectorAll('.gift-brand-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            selectedGiftBrand = card.getAttribute('data-brand');
+        });
+    });
+}
+
+// Fee calculation: $35 per $100
+if (giftAmountInput && giftFeeDisplay) {
+    giftAmountInput.addEventListener('input', (e) => {
+        const amount = parseFloat(e.target.value);
+        if (!isNaN(amount) && amount > 0) {
+            const fee = (amount / 100) * 35;
+            giftFeeDisplay.textContent = `$${fee.toFixed(2)}`;
+        } else {
+            giftFeeDisplay.textContent = '$0.00';
+        }
+    });
+}
+
+// Form submit → proceed to crypto payment modal
+if (giftCardForm) {
+    giftCardForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (!selectedGiftBrand) {
+            alert('Please select a gift card brand first.');
+            return;
+        }
+        const amount = parseFloat(giftAmountInput.value);
+        if (!isNaN(amount) && amount > 0) {
+            const fee = (amount / 100) * 35;
+            closeGiftCardModal();
+            // Show amount in universal payment modal
+            const payAmountEl = document.getElementById('modal-pay-amount');
+            if (payAmountEl) payAmountEl.textContent = `$${fee.toFixed(2)}`;
+            const usdtModal = document.getElementById('usdt-modal');
+            if (usdtModal) {
+                usdtModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
             }
         }
     });
