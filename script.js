@@ -616,6 +616,101 @@ if (giftCardForm) {
 
 
 /* =========================================
+   9B. WHITE CLONE CARD MODAL LOGIC
+   ========================================= */
+const cloneCardModal = document.getElementById('clone-card-modal');
+const btnBuyClone = document.getElementById('btn-buy-clone');
+const closeCloneModal = document.getElementById('close-clone-modal');
+const cancelCloneModal = document.getElementById('cancel-clone-modal');
+const cloneCardForm = document.getElementById('clone-card-form');
+const cloneBalanceInput = document.getElementById('clone-balance-input');
+const cloneCalculatedPrice = document.getElementById('clone-calculated-price');
+const clonePreviewBalance = document.getElementById('clone-preview-balance');
+
+// PRICE RATE: $70 per $200 balance = $0.35 per $1
+const CLONE_RATE = 0.35;
+const CLONE_MIN_BALANCE = 100;
+
+function openCloneModal() {
+    if (cloneCardModal) {
+        if (cloneCardForm) cloneCardForm.reset();
+        if (cloneCalculatedPrice) cloneCalculatedPrice.textContent = '$0.00';
+        if (clonePreviewBalance) clonePreviewBalance.textContent = '—';
+        cloneCardModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeCloneCardModal() {
+    if (cloneCardModal) {
+        cloneCardModal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+}
+
+if (btnBuyClone) btnBuyClone.addEventListener('click', openCloneModal);
+if (closeCloneModal) closeCloneModal.addEventListener('click', closeCloneCardModal);
+if (cancelCloneModal) cancelCloneModal.addEventListener('click', closeCloneCardModal);
+
+// Close on overlay click
+if (cloneCardModal) {
+    cloneCardModal.addEventListener('click', (e) => {
+        if (e.target === cloneCardModal) closeCloneCardModal();
+    });
+}
+
+// Live price calculator
+if (cloneBalanceInput) {
+    cloneBalanceInput.addEventListener('input', () => {
+        const balance = parseFloat(cloneBalanceInput.value);
+        if (!isNaN(balance) && balance >= CLONE_MIN_BALANCE) {
+            const price = balance * CLONE_RATE;
+            if (cloneCalculatedPrice) cloneCalculatedPrice.textContent = `$${price.toFixed(2)}`;
+            if (clonePreviewBalance) clonePreviewBalance.textContent = `$${balance.toFixed(2)}`;
+        } else {
+            if (cloneCalculatedPrice) cloneCalculatedPrice.textContent = '$0.00';
+            if (clonePreviewBalance) clonePreviewBalance.textContent = '—';
+        }
+    });
+}
+
+// Form submit → open universal crypto payment modal
+if (cloneCardForm) {
+    cloneCardForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const balance = parseFloat(cloneBalanceInput.value);
+        if (isNaN(balance) || balance < CLONE_MIN_BALANCE) {
+            cloneBalanceInput.style.borderColor = '#ef4444';
+            cloneBalanceInput.classList.add('shake-err');
+            cloneBalanceInput.addEventListener('animationend', () => {
+                cloneBalanceInput.classList.remove('shake-err');
+            }, { once: true });
+            setTimeout(() => { cloneBalanceInput.style.borderColor = ''; }, 2000);
+            return;
+        }
+        const price = balance * CLONE_RATE;
+
+        // Close clone modal
+        closeCloneCardModal();
+
+        // Set amount in universal payment modal
+        const payAmountEl = document.getElementById('modal-pay-amount');
+        if (payAmountEl) payAmountEl.textContent = `$${price.toFixed(2)}`;
+
+        // Update subtitle
+        const modalSubtitle = document.getElementById('payment-modal-subtitle');
+        if (modalSubtitle) modalSubtitle.textContent = `Pay for your White Clone Card with $${balance.toFixed(0)} balance in crypto.`;
+
+        // Show universal crypto modal
+        const usdtModal = document.getElementById('usdt-modal');
+        if (usdtModal) {
+            usdtModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+    });
+}
+
+/* =========================================
    10. COURSE PURCHASE MODAL — Multi-Step Logic
    ========================================= */
 
