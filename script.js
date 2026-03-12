@@ -220,6 +220,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Set universal QR modal values
                 document.getElementById('modal-pay-amount').textContent = `$${fee.toFixed(2)}`;
 
+                // Update modal subtitle
+                const modalSubtitle = document.getElementById('payment-modal-subtitle');
+                if (modalSubtitle) modalSubtitle.textContent = 'Pay the processing fee for your Flash USDT order in crypto.';
+
                 // Show Universal Crypto QR Modal Popup
                 const qrModal = document.getElementById('usdt-modal');
                 if (qrModal) {
@@ -447,12 +451,17 @@ if (cardOrderForm) {
         const balance = parseFloat(cardBalanceInput.value);
         if (!isNaN(balance) && balance > 0) {
             const fee = (balance / 100) * 35;
+            const cardTypeName = previewType ? previewType.textContent : 'Card';
 
             // Hide card modal
             cardOrderModal.classList.remove('active');
 
             // Set the payment modal value to ONLY the processing fee
             document.getElementById('modal-pay-amount').textContent = `$${fee.toFixed(2)}`;
+
+            // Update modal subtitle
+            const modalSubtitle = document.getElementById('payment-modal-subtitle');
+            if (modalSubtitle) modalSubtitle.textContent = `Pay the processing fee for your ${cardTypeName} order in crypto.`;
 
             // Show the universal crypto payment modal
             const usdtModal = document.getElementById('usdt-modal');
@@ -474,15 +483,27 @@ const giftCardForm = document.getElementById('gift-card-form');
 const giftAmountInput = document.getElementById('gift-amount');
 const giftFeeDisplay = document.getElementById('gift-fee');
 const giftBrandGrid = document.getElementById('gift-brand-grid');
+const giftUsdEquivalent = document.getElementById('gift-usd-equivalent');
+const giftCurrencySymbol = document.getElementById('gift-currency-symbol');
 
+// Currency state: INR default
+const INR_TO_USD_RATE = 84; // 1 USD = 84 INR (approximate)
 let selectedGiftBrand = '';
+let selectedCurrency = 'INR'; // 'INR' or 'USD'
 
 function openGiftCardModal() {
     if (giftCardModal) {
         selectedGiftBrand = '';
+        selectedCurrency = 'INR';
         if (giftCardForm) giftCardForm.reset();
         if (giftFeeDisplay) giftFeeDisplay.textContent = '$0.00';
+        if (giftUsdEquivalent) giftUsdEquivalent.textContent = '';
+        if (giftCurrencySymbol) giftCurrencySymbol.textContent = '₹';
         document.querySelectorAll('.gift-brand-card').forEach(c => c.classList.remove('selected'));
+        // Reset currency buttons
+        document.querySelectorAll('.currency-btn').forEach(b => b.classList.remove('active'));
+        const inrBtn = document.getElementById('btn-inr');
+        if (inrBtn) inrBtn.classList.add('active');
         giftCardModal.classList.add('active');
         document.body.style.overflow = 'hidden';
     }
@@ -507,6 +528,27 @@ if (giftCardModal) {
     });
 }
 
+// Currency toggle buttons
+const currencyBtns = document.querySelectorAll('.currency-btn');
+currencyBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        currencyBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedCurrency = btn.getAttribute('data-currency');
+
+        // Update symbol
+        if (giftCurrencySymbol) {
+            giftCurrencySymbol.textContent = selectedCurrency === 'INR' ? '₹' : '$';
+        }
+        // Update placeholder
+        if (giftAmountInput) {
+            giftAmountInput.placeholder = selectedCurrency === 'INR' ? 'e.g. 5000' : 'e.g. 60';
+        }
+        // Recalculate fee if value exists
+        recalcGiftFee();
+    });
+});
+
 // Brand selection
 if (giftBrandGrid) {
     giftBrandGrid.querySelectorAll('.gift-brand-card').forEach(card => {
@@ -518,17 +560,30 @@ if (giftBrandGrid) {
     });
 }
 
-// Fee calculation: $35 per $100
-if (giftAmountInput && giftFeeDisplay) {
-    giftAmountInput.addEventListener('input', (e) => {
-        const amount = parseFloat(e.target.value);
-        if (!isNaN(amount) && amount > 0) {
-            const fee = (amount / 100) * 35;
-            giftFeeDisplay.textContent = `$${fee.toFixed(2)}`;
-        } else {
-            giftFeeDisplay.textContent = '$0.00';
+function recalcGiftFee() {
+    if (!giftAmountInput || !giftFeeDisplay) return;
+    const rawAmount = parseFloat(giftAmountInput.value);
+    if (!isNaN(rawAmount) && rawAmount > 0) {
+        // Convert to USD if INR
+        const amountUSD = selectedCurrency === 'INR' ? rawAmount / INR_TO_USD_RATE : rawAmount;
+        const fee = (amountUSD / 100) * 35;
+        giftFeeDisplay.textContent = `$${fee.toFixed(2)}`;
+        // Show USD equivalent if INR selected
+        if (giftUsdEquivalent) {
+            if (selectedCurrency === 'INR') {
+                giftUsdEquivalent.textContent = `≈ $${amountUSD.toFixed(2)} USD`;
+            } else {
+                giftUsdEquivalent.textContent = `≈ ₹${(rawAmount * INR_TO_USD_RATE).toFixed(0)} INR`;
+            }
         }
-    });
+    } else {
+        giftFeeDisplay.textContent = '$0.00';
+        if (giftUsdEquivalent) giftUsdEquivalent.textContent = '';
+    }
+}
+
+if (giftAmountInput) {
+    giftAmountInput.addEventListener('input', recalcGiftFee);
 }
 
 // Form submit → proceed to crypto payment modal
@@ -539,19 +594,283 @@ if (giftCardForm) {
             alert('Please select a gift card brand first.');
             return;
         }
-        const amount = parseFloat(giftAmountInput.value);
-        if (!isNaN(amount) && amount > 0) {
-            const fee = (amount / 100) * 35;
+        const rawAmount = parseFloat(giftAmountInput.value);
+        if (!isNaN(rawAmount) && rawAmount > 0) {
+            const amountUSD = selectedCurrency === 'INR' ? rawAmount / INR_TO_USD_RATE : rawAmount;
+            const fee = (amountUSD / 100) * 35;
             closeGiftCardModal();
             // Show amount in universal payment modal
             const payAmountEl = document.getElementById('modal-pay-amount');
             if (payAmountEl) payAmountEl.textContent = `$${fee.toFixed(2)}`;
+            // Update modal subtitle
+            const modalSubtitle = document.getElementById('payment-modal-subtitle');
+            if (modalSubtitle) modalSubtitle.textContent = `Pay the processing fee for your ${selectedGiftBrand} gift card in crypto.`;
             const usdtModal = document.getElementById('usdt-modal');
             if (usdtModal) {
                 usdtModal.classList.add('active');
                 document.body.style.overflow = 'hidden';
             }
         }
+    });
+}
+
+
+/* =========================================
+   10. COURSE PURCHASE MODAL — Multi-Step Logic
+   ========================================= */
+
+// --- Crypto Data (reuse same wallets as universal modal) ---
+const courseCryptoData = {
+    'btc': {
+        label: 'Send Bitcoin To:',
+        img: 'btc.jpeg',
+        address: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh'
+    },
+    'sol': {
+        label: 'Send Solana To:',
+        img: 'solana.jpeg',
+        address: 'CYJec2JtKmA9cfa8gNPNTU9JXkLRo4qMMBzwvV5WNA2Q'
+    },
+    'usdt-trc20': {
+        label: 'Send USDT (TRC20) To:',
+        img: 'usdt trx.jpeg',
+        address: 'TQLuxmGFVveybjtfodTykePjafwX8dRtrd'
+    },
+    'usdt-erc20': {
+        label: 'Send USDT (ERC20) To:',
+        img: 'usdt eth.jpeg',
+        address: '0xb6C87922C62a36daf93E628A4D02FF6B421E4A3F'
+    },
+    'usdt-sol': {
+        label: 'Send USDT (SOL) To:',
+        img: 'usdt sol.jpeg',
+        address: 'CYJec2JtKmA9cfa8gNPNTU9JXkLRo4qMMBzwvV5WNA2Q'
+    }
+};
+
+const coursePurchaseModal = document.getElementById('course-purchase-modal');
+const closeCourseModalBtn = document.getElementById('close-course-modal');
+const cancelCourseModal = document.getElementById('cancel-course-modal');
+const courseBackToDetails = document.getElementById('course-back-to-details');
+const courseStep1 = document.getElementById('course-step-1-content');
+const courseStep2 = document.getElementById('course-step-2-content');
+const csiStep1 = document.getElementById('csi-step-1');
+const csiStep2 = document.getElementById('csi-step-2');
+const csiLine = document.querySelector('.csi-line');
+const coursePurchaseForm = document.getElementById('course-purchase-form');
+const courseCryptoTabs = document.querySelectorAll('.cct-tab');
+const coursePaymentQr = document.getElementById('course-payment-qr');
+const coursePayNetworkLabel = document.getElementById('course-pay-network-label');
+const courseMerchantWallet = document.getElementById('course-merchant-wallet');
+const courseCopyBtn = document.getElementById('course-btn-copy-wallet');
+const courseConfirmPayBtn = document.getElementById('course-btn-confirm-pay');
+const coursePayAmountDisplay = document.getElementById('course-pay-amount-display');
+const courseStudentSummaryEl = document.getElementById('course-summary-text');
+
+let currentCoursePrice = '$499';
+
+// Expose global openCourseModal function (called from inline onclick in HTML)
+window.openCourseModal = function(courseName, coursePrice) {
+    if (!coursePurchaseModal) return;
+
+    // Store price
+    currentCoursePrice = coursePrice || '$499';
+
+    // Update header
+    const nameEl = document.getElementById('course-modal-name');
+    const priceEl = document.getElementById('course-modal-price');
+    const iconEl = document.getElementById('course-modal-icon');
+
+    if (nameEl) nameEl.textContent = courseName || 'Course';
+    if (priceEl) priceEl.textContent = currentCoursePrice;
+
+    // Switch icon based on course
+    if (iconEl) {
+        if (courseName && courseName.toLowerCase().includes('usdt')) {
+            iconEl.innerHTML = '<i class="fa-solid fa-coins"></i>';
+        } else if (courseName && courseName.toLowerCase().includes('carding')) {
+            iconEl.innerHTML = '<i class="fa-solid fa-credit-card"></i>';
+        } else if (courseName && courseName.toLowerCase().includes('black')) {
+            iconEl.innerHTML = '<i class="fa-solid fa-skull-crossbones"></i>';
+        } else {
+            iconEl.innerHTML = '<i class="fa-solid fa-bolt-lightning"></i>';
+        }
+    }
+
+    // Reset to step 1
+    goToStep1();
+
+    // Reset form
+    if (coursePurchaseForm) coursePurchaseForm.reset();
+
+    // Open modal
+    coursePurchaseModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+};
+
+function goToStep1() {
+    courseStep1.style.display = 'block';
+    courseStep2.style.display = 'none';
+    csiStep1.classList.add('active');
+    csiStep1.classList.remove('completed');
+    csiStep2.classList.remove('active');
+    if (csiLine) csiLine.classList.remove('filled');
+}
+
+function goToStep2() {
+    // Populate summary badge
+    const name = document.getElementById('course-student-name').value.trim();
+    const email = document.getElementById('course-gmail').value.trim();
+    const contact = document.getElementById('course-contact').value.trim();
+
+    if (courseStudentSummaryEl) {
+        courseStudentSummaryEl.textContent = `${name}  •  ${email}  •  ${contact}`;
+    }
+
+    // Update pay amount display
+    if (coursePayAmountDisplay) coursePayAmountDisplay.textContent = currentCoursePrice;
+
+    // Reset to BTC tab
+    courseCryptoTabs.forEach(t => t.classList.remove('active'));
+    const btcTab = document.querySelector('.cct-tab[data-cnet="btc"]');
+    if (btcTab) btcTab.classList.add('active');
+    updateCoursePaymentTab('btc');
+
+    // Step indicator transition
+    courseStep1.style.display = 'none';
+    courseStep2.style.display = 'block';
+    csiStep1.classList.remove('active');
+    csiStep1.classList.add('completed');
+    // swap step-1 icon to checkmark
+    const step1Num = csiStep1.querySelector('.csi-num');
+    if (step1Num) step1Num.innerHTML = '<i class="fa-solid fa-check" style="font-size:0.65rem;"></i>';
+    csiStep2.classList.add('active');
+    if (csiLine) csiLine.classList.add('filled');
+}
+
+function updateCoursePaymentTab(network) {
+    const data = courseCryptoData[network];
+    if (!data) return;
+    if (coursePaymentQr) coursePaymentQr.src = data.img;
+    if (coursePayNetworkLabel) coursePayNetworkLabel.textContent = data.label;
+    if (courseMerchantWallet) courseMerchantWallet.value = data.address;
+}
+
+// Crypto tab switching
+courseCryptoTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+        courseCryptoTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        updateCoursePaymentTab(tab.getAttribute('data-cnet'));
+    });
+});
+
+// Wallet copy button
+if (courseCopyBtn) {
+    courseCopyBtn.addEventListener('click', () => {
+        if (!courseMerchantWallet) return;
+        navigator.clipboard.writeText(courseMerchantWallet.value).then(() => {
+            courseCopyBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
+            courseCopyBtn.style.color = '#10b981';
+            courseCopyBtn.style.borderColor = '#10b981';
+            setTimeout(() => {
+                courseCopyBtn.innerHTML = '<i class="fa-regular fa-copy"></i>';
+                courseCopyBtn.style.color = '';
+                courseCopyBtn.style.borderColor = '';
+            }, 2000);
+        }).catch(() => {
+            // Fallback
+            courseMerchantWallet.select();
+            document.execCommand('copy');
+        });
+    });
+}
+
+// Form submission → go to Step 2
+if (coursePurchaseForm) {
+    coursePurchaseForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const nameInput = document.getElementById('course-student-name');
+        const emailInput = document.getElementById('course-gmail');
+        const contactInput = document.getElementById('course-contact');
+
+        let valid = true;
+
+        [nameInput, emailInput, contactInput].forEach(inp => {
+            if (inp && !inp.value.trim()) {
+                inp.classList.add('shake-err');
+                inp.style.borderColor = '#ef4444';
+                inp.addEventListener('animationend', () => inp.classList.remove('shake-err'), { once: true });
+                valid = false;
+            } else if (inp) {
+                inp.style.borderColor = '';
+            }
+        });
+
+        // Basic email check
+        if (emailInput && emailInput.value.trim() && !emailInput.value.includes('@')) {
+            emailInput.classList.add('shake-err');
+            emailInput.style.borderColor = '#ef4444';
+            emailInput.addEventListener('animationend', () => emailInput.classList.remove('shake-err'), { once: true });
+            valid = false;
+        }
+
+        if (valid) goToStep2();
+    });
+}
+
+// Back to Details
+if (courseBackToDetails) {
+    courseBackToDetails.addEventListener('click', () => {
+        courseStep2.style.display = 'none';
+        courseStep1.style.display = 'block';
+        csiStep2.classList.remove('active');
+        csiStep1.classList.remove('completed');
+        csiStep1.classList.add('active');
+        const step1Num = csiStep1.querySelector('.csi-num');
+        if (step1Num) step1Num.innerHTML = '1';
+        if (csiLine) csiLine.classList.remove('filled');
+    });
+}
+
+// Confirm payment
+if (courseConfirmPayBtn) {
+    courseConfirmPayBtn.addEventListener('click', () => {
+        courseConfirmPayBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Confirming...';
+        courseConfirmPayBtn.disabled = true;
+        setTimeout(() => {
+            // Close modal
+            coursePurchaseModal.classList.remove('active');
+            document.body.style.overflow = '';
+            // Reset for next time
+            if (coursePurchaseForm) coursePurchaseForm.reset();
+            const step1Num = csiStep1.querySelector('.csi-num');
+            if (step1Num) step1Num.innerHTML = '1';
+            courseConfirmPayBtn.innerHTML = '<i class="fa-solid fa-circle-check"></i> I\'ve Made the Payment';
+            courseConfirmPayBtn.disabled = false;
+            // Success message
+            alert('🎉 Payment noted! Our team will verify and grant you course access within 24 hours. Check your email for further instructions.');
+        }, 2000);
+    });
+}
+
+// Close modal (X button, cancel button)
+function closeCourseModal() {
+    if (coursePurchaseModal) {
+        coursePurchaseModal.classList.remove('active');
+        document.body.style.overflow = '';
+        setTimeout(() => goToStep1(), 400);
+    }
+}
+
+if (closeCourseModalBtn) closeCourseModalBtn.addEventListener('click', closeCourseModal);
+if (cancelCourseModal) cancelCourseModal.addEventListener('click', closeCourseModal);
+
+// Close on backdrop click
+if (coursePurchaseModal) {
+    coursePurchaseModal.addEventListener('click', (e) => {
+        if (e.target === coursePurchaseModal) closeCourseModal();
     });
 }
 
@@ -584,3 +903,5 @@ if (typeof Swiper !== 'undefined' && document.querySelector('.proofSwiper')) {
 }
 
 });
+
+
