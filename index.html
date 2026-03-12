@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DOOM UNIVERSE White Card - Premium Service Platform</title>
+    <title>ROX White Card - Premium Service Platform</title>
 
     <!-- Using Google Fonts for a Premium Look (Outfit & Plus Jakarta Sans) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -37,19 +37,13 @@
     <!-- NAVBAR SECTION -->
     <nav class="navbar" id="navbar">
         <div class="container nav-container">
-            <!-- ========================================== -->
-            <!-- ✏️ EDIT: LOGO TEXT / BRAND NAME HERE -->
-            <!-- ========================================== -->
-            <a href="#" class="logo">
+            <a href="#home" class="logo">
                 <img src="doom.jpeg" alt="Doom Logo" class="nav-logo-icon"
                     style="height: 32px; vertical-align: middle; margin-right: 8px;">
                 DOOM'S <span>Universe</span>
             </a>
 
-            <ul class="nav-links">
-                <!-- ========================================== -->
-                <!-- ✏️ EDIT: NAVIGATION LINKS HERE -->
-                <!-- ========================================== -->
+            <ul class="nav-links" id="nav-links">
                 <li><a href="#home">Home</a></li>
                 <li><a href="#doom-universe">Cards</a></li>
                 <li><a href="#flash-usdt">Flash USDT</a></li>
@@ -58,12 +52,37 @@
                 <li><a href="#support">Support</a></li>
             </ul>
 
-            <!-- ========================================== -->
-            <!-- ✏️ EDIT: NAVBAR BUTTON TEXT -->
-            <!-- ========================================== -->
-            <a href="#contact" class="btn btn-nav">Get Yours</a>
+            <a href="#doom-universe" class="btn btn-nav desktop-only">Get Yours</a>
+
+            <!-- Hamburger Button (Mobile Only) -->
+            <button class="hamburger" id="hamburger-btn" aria-label="Open menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
         </div>
     </nav>
+
+    <!-- Mobile Navigation Drawer -->
+    <div class="mobile-drawer" id="mobile-drawer">
+        <div class="drawer-overlay" id="drawer-overlay"></div>
+        <div class="drawer-panel">
+            <button class="drawer-close" id="drawer-close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <a href="#" class="logo drawer-logo">
+                <img src="doom.jpeg" alt="Doom Logo" style="height: 28px; vertical-align: middle; margin-right: 8px;">
+                DOOM'S <span>Universe</span>
+            </a>
+            <ul class="drawer-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#doom-universe">Cards</a></li>
+                <li><a href="#flash-usdt">Flash USDT</a></li>
+                <li><a href="#courses">Courses</a></li>
+                <li><a href="#proofs">Proofs</a></li>
+                <li><a href="#support">Support</a></li>
+            </ul>
+            <a href="#doom-universe" class="btn btn-primary drawer-cta">Get Yours <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+    </div>
 
     <!-- HERO SECTION -->
     <header class="hero" id="home">
@@ -93,12 +112,8 @@
                 </p>
 
                 <div class="hero-btns">
-                    <!-- ========================================== -->
-                    <!-- ✏️ EDIT: HERO BUTTONS TEXT -->
-                    <!-- ========================================== -->
-                    <a href="#services" class="btn btn-primary">Discover Services <i
-                            class="fa-solid fa-arrow-right"></i></a>
-                    <a href="#about" class="btn btn-secondary">Learn More</a>
+                    <a href="#doom-universe" class="btn btn-primary">Discover Services <i class="fa-solid fa-arrow-right"></i></a>
+                    <a href="#features" class="btn btn-secondary">Learn More</a>
                 </div>
             </div>
 
@@ -205,43 +220,51 @@
                 </div>
 
                 <div class="doom-services-grid">
-                    <!-- Service 1 -->
+                    <!-- Service 1 - VISA -->
                     <div class="doom-service-card">
-                        <div class="doom-item-info">
-                            <h4>VISA CARD'S</h4>
-                            <p>Get yourself a loaded internationally accepted VISA with ATM withdrwals and online
-                                purchaces flawlessely</p>
+                        <div class="card-brand-banner visa-banner">
+                            <i class="fa-brands fa-cc-visa card-brand-icon"></i>
                         </div>
-                        <button class="btn btn-primary btn-sm" id="btn-buy-visa">Buy Now <i
-                                class="fa-solid fa-cart-shopping"></i></button>
-                    </div>
-                    <!-- Service 2 -->
-                    <div class="doom-service-card">
                         <div class="doom-item-info">
-                            <h4>MASTER CARD'S</h4>
-                            <p>Get yourself a loaded internationally accepted Master card with ATM withdrwals and online
-                                purchaces flawlessely</p>
+                            <h4>VISA CARD</h4>
+                            <p>Internationally accepted VISA with ATM withdrawals and seamless online purchases worldwide.</p>
                         </div>
-                        <button class="btn btn-primary btn-sm" id="btn-buy-mastercard">Buy Now <i
-                                class="fa-solid fa-cart-shopping"></i></button>
+                        <button class="btn btn-primary btn-sm" id="btn-buy-visa">Buy Now <i class="fa-solid fa-cart-shopping"></i></button>
                     </div>
-                    <!-- Service 3 -->
+                    <!-- Service 2 - MASTERCARD -->
                     <div class="doom-service-card">
+                        <div class="card-brand-banner mc-banner">
+                            <i class="fa-brands fa-cc-mastercard card-brand-icon"></i>
+                        </div>
+                        <div class="doom-item-info">
+                            <h4>MASTER CARD</h4>
+                            <p>Internationally accepted Mastercard with ATM withdrawals and flawless online purchases globally.</p>
+                        </div>
+                        <button class="btn btn-primary btn-sm" id="btn-buy-mastercard">Buy Now <i class="fa-solid fa-cart-shopping"></i></button>
+                    </div>
+                    <!-- Service 3 - BULK CARDS (Coming Soon) -->
+                    <div class="doom-service-card coming-soon-card">
+                        <div class="card-brand-banner bulk-banner">
+                            <i class="fa-solid fa-layer-group card-brand-icon"></i>
+                        </div>
                         <div class="doom-item-info">
                             <h4>BULK CARD ORDERS</h4>
-                            <p>Get loaded bulk card VISA as well as master card at the linest pricing </p>
+                            <p>Get loaded bulk VISA &amp; Mastercard at the finest pricing — enterprise-level volume deals.</p>
                         </div>
-                        <button class="btn btn-primary btn-sm">Buy Now <i
-                                class="fa-solid fa-cart-shopping"></i></button>
+                        <div class="coming-soon-badge-card">
+                            <i class="fa-solid fa-clock"></i> Coming Soon
+                        </div>
                     </div>
-                    <!-- Service 4 -->
+                    <!-- Service 4 - DIGITAL GIFT CARD -->
                     <div class="doom-service-card">
-                        <div class="doom-item-info">
-                            <h4>DIGITAL GIFT CARS </h4>
-                            <p>Coimng soon </p>
+                        <div class="card-brand-banner gift-banner">
+                            <i class="fa-solid fa-gift card-brand-icon"></i>
                         </div>
-                        <button class="btn btn-primary btn-sm">Buy Now <i
-                                class="fa-solid fa-cart-shopping"></i></button>
+                        <div class="doom-item-info">
+                            <h4>DIGITAL GIFT CARDS</h4>
+                            <p>Amazon, Apple, Google Play, Steam, Netflix &amp; more — instant delivery to your inbox.</p>
+                        </div>
+                        <button class="btn btn-primary btn-sm" id="btn-buy-giftcard">Buy Now <i class="fa-solid fa-cart-shopping"></i></button>
                     </div>
                 </div>
             </div>
@@ -398,7 +421,7 @@
                     </div>
                     <!-- Slide 4 -->
                     <div class="swiper-slide">
-                        <img src="proof3.jpeg" alt="Customer Proof 4">
+                        <img src="proof 7.jpeg" alt="Customer Proof 4">
                     </div>
                     <!-- Slide 5 -->
                     <div class="swiper-slide">
@@ -458,29 +481,24 @@
     <footer class="footer">
         <div class="container footer-container">
             <div class="footer-brand">
-                <!-- ========================================== -->
-                <!-- ✏️ EDIT: FOOTER BRAND NAME / LOGO -->
-                <!-- ========================================== -->
                 <h2>DOOM'S UNIVERSE</h2>
                 <p>The Supreme Tier Standard.</p>
             </div>
             <div class="footer-links">
-                <!-- ========================================== -->
-                <!-- ✏️ EDIT: FOOTER LINKS -->
-                <!-- ========================================== -->
                 <a href="#">Privacy Policy</a>
                 <a href="#">Terms of Service</a>
                 <a href="#">Member Portal</a>
+                <a href="https://t.me/doomsuniverse" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-telegram"></i> Telegram</a>
+                <a href="mailto:doomsuniverse@proton.me"><i class="fa-solid fa-envelope"></i> Email Us</a>
             </div>
             <div class="footer-socials">
-                <a href="https://www.instagram.com/doomsuniverse_?igsh=emlmaW1oNHgwNzJ2" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://www.instagram.com/doomsuniverse_?igsh=emlmaW1oNHgwNzJ2" target="_blank" rel="noopener noreferrer" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://t.me/doomsuniverse" target="_blank" rel="noopener noreferrer" title="Telegram"><i class="fa-brands fa-telegram"></i></a>
+                <a href="mailto:doomsuniverse@proton.me" title="Email"><i class="fa-solid fa-envelope"></i></a>
             </div>
         </div>
         <div class="footer-bottom">
-            <!-- ========================================== -->
-            <!-- ✏️ EDIT: COPYRIGHT TEXT -->
-            <!-- ========================================== -->
-            <p>&copy; 2026 ROX White Card. All exclusive rights reserved.</p>
+            <p>&copy; 2026 DOOM'S UNIVERSE. All exclusive rights reserved.</p>
         </div>
     </footer>
 
@@ -723,6 +741,69 @@
             <div class="modal-actions">
                 <button class="btn btn-primary" id="btn-confirm-payment">I Have Made The Payment</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Digital Gift Card Modal -->
+    <div id="gift-card-modal" class="modal-overlay">
+        <div class="modal-content premium-modal" style="max-width: 540px;">
+            <button class="modal-close" id="close-gift-modal"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-header" style="margin-bottom: 1.5rem;">
+                <h2 id="gift-modal-title" style="font-size: 1.75rem; font-weight: 800; color: var(--text-main);">Digital Gift Card</h2>
+                <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.4rem;">Select a brand, enter amount, and proceed to payment.</p>
+            </div>
+
+            <!-- Brand Grid -->
+            <div style="margin-bottom: 1.5rem;">
+                <label style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 0.75rem;">Choose Brand</label>
+                <div class="gift-brand-grid" id="gift-brand-grid">
+                    <div class="gift-brand-card" data-brand="Amazon"><i class="fa-brands fa-amazon"></i><span>Amazon</span></div>
+                    <div class="gift-brand-card" data-brand="Apple"><i class="fa-brands fa-apple"></i><span>Apple</span></div>
+                    <div class="gift-brand-card" data-brand="Google Play"><i class="fa-brands fa-google-play"></i><span>Google Play</span></div>
+                    <div class="gift-brand-card" data-brand="Steam"><i class="fa-brands fa-steam"></i><span>Steam</span></div>
+                    <div class="gift-brand-card" data-brand="Netflix"><i class="fa-solid fa-film"></i><span>Netflix</span></div>
+                    <div class="gift-brand-card" data-brand="Spotify"><i class="fa-brands fa-spotify"></i><span>Spotify</span></div>
+                    <div class="gift-brand-card" data-brand="PlayStation"><i class="fa-brands fa-playstation"></i><span>PlayStation</span></div>
+                    <div class="gift-brand-card" data-brand="Xbox"><i class="fa-brands fa-xbox"></i><span>Xbox</span></div>
+                    <div class="gift-brand-card" data-brand="Uber"><i class="fa-solid fa-car"></i><span>Uber</span></div>
+                    <div class="gift-brand-card" data-brand="Airbnb"><i class="fa-brands fa-airbnb"></i><span>Airbnb</span></div>
+                </div>
+            </div>
+
+            <form id="gift-card-form" style="display: flex; flex-direction: column; gap: 1.25rem;">
+                <!-- Amount Input -->
+                <div class="input-group-custom" style="display: flex; flex-direction: column; gap: 0.4rem;">
+                    <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Gift Card Amount ($)</label>
+                    <div style="position: relative;">
+                        <span style="position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-weight: 600;">$</span>
+                        <input type="number" id="gift-amount" placeholder="e.g. 100" min="10" style="width: 100%; padding: 1rem 1rem 1rem 2.5rem; border-radius: 12px; background: var(--bg-primary); border: 1px solid var(--accent-light); font-size: 1.05rem; outline: none; color: var(--text-main);" required>
+                    </div>
+                </div>
+
+                <!-- Recipient Email -->
+                <div class="input-group-custom" style="display: flex; flex-direction: column; gap: 0.4rem;">
+                    <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Recipient Email</label>
+                    <div style="position: relative;">
+                        <i class="fa-solid fa-envelope" style="position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+                        <input type="email" id="gift-email" placeholder="delivery@email.com" style="width: 100%; padding: 1rem 1rem 1rem 2.8rem; border-radius: 12px; background: var(--bg-primary); border: 1px solid var(--accent-light); font-size: 1.05rem; outline: none; color: var(--text-main);" required>
+                    </div>
+                </div>
+
+                <!-- Fee Display -->
+                <div class="fee-display" style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem; background: rgba(79,70,229,0.08); border: 1px solid rgba(79,70,229,0.25); border-radius: 16px;">
+                    <div style="display: flex; flex-direction: column;">
+                        <span style="font-weight: 700; font-size: 0.8rem; color: var(--text-main); text-transform: uppercase;">Processing Fee</span>
+                        <span style="font-size: 0.75rem; color: var(--accent-color);">$35 per $100 card value</span>
+                    </div>
+                    <span id="gift-fee" style="font-size: 1.75rem; color: var(--accent-color); font-weight: 800;">$0.00</span>
+                </div>
+
+                <!-- Actions -->
+                <div style="display: flex; gap: 0.75rem; margin-top: 0.25rem;">
+                    <button type="button" class="btn btn-secondary" id="cancel-gift-modal" style="flex: 1;">Cancel</button>
+                    <button type="submit" class="btn btn-primary" style="flex: 2; border: none;"><i class="fa-solid fa-lock" style="font-size: 0.8rem; margin-right: 0.4rem;"></i> Proceed to Payment</button>
+                </div>
+            </form>
         </div>
     </div>
 
