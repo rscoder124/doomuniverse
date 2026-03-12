@@ -1471,16 +1471,20 @@ span {
 }
 
 @media (max-width: 768px) {
-    .nav-links {
-        display: none; /* Hide on mobile for simplicity, or add a hamburger menu */
+    .nav-links,
+    .desktop-only {
+        display: none !important;
     }
-    
+    .hamburger {
+        display: flex !important;
+    }
+
     .hero-title {
-        font-size: 3rem;
+        font-size: 2.75rem;
     }
     
     .section-title {
-        font-size: 2.5rem;
+        font-size: 2.2rem;
     }
     
     .cta-title {
@@ -1502,6 +1506,15 @@ span {
     .input-group .btn {
         margin: 0;
         width: 100%;
+    }
+
+    .rox-card-3d {
+        width: 300px;
+        height: 190px;
+    }
+
+    .doom-header .section-title {
+        font-size: 2rem;
     }
 }
 
@@ -1815,4 +1828,343 @@ span {
     color: #10b981;
     font-weight: 700;
     box-shadow: 0 4px 15px rgba(16, 185, 129, 0.15);
+}
+
+/* =========================================
+   HAMBURGER BUTTON
+   ========================================= */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    z-index: 1100;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    transition: background 0.2s ease;
+}
+
+.hamburger:hover {
+    background: rgba(79, 70, 229, 0.08);
+}
+
+.hamburger span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--text-main);
+    border-radius: 2px;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    transform-origin: center;
+}
+
+.hamburger.open span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+.hamburger.open span:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0);
+}
+.hamburger.open span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+}
+
+/* =========================================
+   MOBILE NAVIGATION DRAWER
+   ========================================= */
+.mobile-drawer {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 2000;
+    pointer-events: none;
+    visibility: hidden;
+}
+
+.mobile-drawer.open {
+    pointer-events: all;
+    visibility: visible;
+}
+
+.drawer-overlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+}
+
+.mobile-drawer.open .drawer-overlay {
+    opacity: 1;
+}
+
+.drawer-panel {
+    position: absolute;
+    top: 0; right: 0;
+    width: min(320px, 85vw);
+    height: 100%;
+    background: var(--bg-secondary);
+    padding: 2rem 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    transform: translateX(100%);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: -20px 0 60px rgba(0,0,0,0.15);
+    overflow-y: auto;
+}
+
+.mobile-drawer.open .drawer-panel {
+    transform: translateX(0);
+}
+
+.drawer-close {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    background: var(--bg-primary);
+    border: 1px solid var(--accent-light);
+    border-radius: 50%;
+    width: 36px; height: 36px;
+    display: flex; justify-content: center; align-items: center;
+    cursor: pointer;
+    color: var(--text-main);
+    font-size: 1rem;
+    transition: var(--transition-fast);
+}
+.drawer-close:hover {
+    background: var(--accent-color);
+    color: #fff;
+    border-color: var(--accent-color);
+}
+
+.drawer-logo {
+    margin-top: 1.75rem;
+}
+
+.drawer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    list-style: none;
+    padding: 0;
+    flex: 1;
+}
+
+.drawer-links li a {
+    display: block;
+    padding: 0.9rem 1rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    border-radius: 12px;
+    transition: var(--transition-fast);
+    font-family: var(--font-heading);
+}
+
+.drawer-links li a:hover {
+    background: var(--bg-primary);
+    color: var(--text-main);
+    padding-left: 1.4rem;
+}
+
+.drawer-cta {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+}
+
+/* =========================================
+   CARD BRAND BANNERS (Visa / MC / etc.)
+   ========================================= */
+.card-brand-banner {
+    width: 100%;
+    height: 70px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.card-brand-icon {
+    font-size: 2.8rem;
+    position: relative;
+    z-index: 1;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.15));
+}
+
+.visa-banner {
+    background: linear-gradient(135deg, #1a1f71, #2d3a8c);
+    color: #fff;
+}
+
+.mc-banner {
+    background: linear-gradient(135deg, #1a1a1a, #3d3d3d);
+    color: #fff;
+}
+
+.mc-banner .card-brand-icon {
+    color: #eb001b;
+    text-shadow: 20px 0 0 #f79e1b;
+}
+
+.bulk-banner {
+    background: linear-gradient(135deg, #312e81, #4c1d95);
+    color: #c4b5fd;
+}
+
+.gift-banner {
+    background: linear-gradient(135deg, #064e3b, #065f46);
+    color: #6ee7b7;
+}
+
+/* Coming Soon badge inside doom-service-card */
+.coming-soon-card {
+    opacity: 0.85;
+    pointer-events: none;
+}
+
+.coming-soon-badge-card {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1.25rem;
+    background: linear-gradient(135deg, rgba(79,70,229,0.12), rgba(139,92,246,0.12));
+    border: 1px solid rgba(139,92,246,0.35);
+    border-radius: 50px;
+    color: #8b5cf6;
+    font-size: 0.85rem;
+    font-weight: 700;
+    font-family: var(--font-heading);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    width: 100%;
+    justify-content: center;
+    margin-top: auto;
+}
+
+/* =========================================
+   GIFT CARD BRAND GRID
+   ========================================= */
+.gift-brand-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.6rem;
+}
+
+.gift-brand-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    padding: 0.75rem 0.5rem;
+    border: 1.5px solid var(--accent-light);
+    border-radius: 12px;
+    background: var(--bg-primary);
+    cursor: pointer;
+    transition: var(--transition-fast);
+    text-align: center;
+}
+
+.gift-brand-card i {
+    font-size: 1.4rem;
+    color: var(--text-muted);
+    transition: color 0.2s ease;
+}
+
+.gift-brand-card span {
+    font-size: 0.65rem;
+    font-weight: 600;
+    font-family: var(--font-heading);
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.gift-brand-card:hover,
+.gift-brand-card.selected {
+    border-color: var(--accent-color);
+    background: rgba(79, 70, 229, 0.06);
+}
+
+.gift-brand-card.selected {
+    border-color: var(--accent-color);
+    background: rgba(79, 70, 229, 0.1);
+    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+}
+
+.gift-brand-card.selected i,
+.gift-brand-card:hover i {
+    color: var(--accent-color);
+}
+
+.gift-brand-card.selected span,
+.gift-brand-card:hover span {
+    color: var(--text-main);
+}
+
+@media (max-width: 480px) {
+    .gift-brand-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* =========================================
+   FOOTER RESPONSIVE & SOCIAL ICON SIZES
+   ========================================= */
+@media (max-width: 992px) {
+    .footer-container {
+        flex-direction: column;
+        gap: 2rem;
+        text-align: center;
+    }
+    .footer-links {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .footer-brand h2 {
+        font-size: 1.5rem;
+    }
+    .hero {
+        padding-top: 95px;
+    }
+    .hero-title {
+        font-size: 2.25rem;
+    }
+    .hero-btns {
+        flex-direction: column;
+        width: 100%;
+    }
+    .hero-btns .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    .doom-services-grid {
+        grid-template-columns: 1fr;
+    }
+    .section-title {
+        font-size: 1.9rem;
+    }
+    .navbar {
+        padding: 1rem 0;
+    }
 }
