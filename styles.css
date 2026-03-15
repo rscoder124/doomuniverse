@@ -3408,3 +3408,639 @@ span {
         padding: 1rem 0;
     }
 }
+
+/* =========================================
+   FLASH USDT ENHANCEMENTS
+   ========================================= */
+.usdt-intel-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+@media (max-width: 992px) {
+    .usdt-intel-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+.network-stats-panel {
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 1.5rem;
+    color: #fff;
+}
+
+.intel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 1rem;
+}
+
+.intel-header h4 {
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #94a3b8;
+}
+
+.live-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #10b981;
+}
+
+.ping-dot {
+    width: 8px;
+    height: 8px;
+    background: #10b981;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #10b981;
+    animation: ping 1.5s infinite;
+}
+
+@keyframes ping {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(2.5); opacity: 0; }
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.stat-item {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.7rem;
+    color: #64748b;
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
+}
+
+.stat-value {
+    font-family: monospace;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.flash-feed-panel {
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 1.5rem;
+    color: #fff;
+    overflow: hidden;
+    max-height: 250px;
+}
+
+.feed-container {
+    height: 160px;
+    overflow-y: hidden;
+    position: relative;
+    mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
+}
+
+.feed-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.85rem;
+    animation: feedSlide 20s linear infinite;
+}
+
+@keyframes feedSlide {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-300px); }
+}
+
+.feed-address {
+    color: #94a3b8;
+    font-family: monospace;
+}
+
+.feed-amount {
+    color: #10b981;
+    font-weight: 700;
+}
+
+/* =========================================
+   ORDER SUCCESS MODAL
+   ========================================= */
+.success-modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(2, 6, 23, 0.85);
+    backdrop-filter: blur(10px);
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.success-modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.success-modal-card {
+    background: #fff;
+    width: 90%;
+    max-width: 450px;
+    padding: 3rem 2rem;
+    border-radius: 30px;
+    text-align: center;
+    transform: scale(0.8) translateY(20px);
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 40px 100px rgba(0,0,0,0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.success-modal-overlay.active .success-modal-card {
+    transform: scale(1) translateY(0);
+}
+
+.success-icon-wrap {
+    width: 80px;
+    height: 80px;
+    background: #10b981;
+    color: #fff;
+    font-size: 2.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    box-shadow: 0 0 30px rgba(16, 185, 129, 0.4);
+    animation: iconPop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes iconPop {
+    0% { transform: scale(0); rotate: -180deg; }
+    70% { transform: scale(1.1); rotate: 10deg; }
+    100% { transform: scale(1); rotate: 0deg; }
+}
+
+.success-title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #1e1b4b;
+}
+
+.success-message {
+    color: #64748b;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+.success-timeframe {
+    background: rgba(16, 185, 129, 0.1);
+    padding: 1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    margin-bottom: 2rem;
+}
+
+.success-timeframe p {
+    font-weight: 700;
+    color: #10b981;
+    margin: 0;
+}
+
+.btn-success-close {
+    width: 100%;
+    background: #1e1b4b;
+    color: #fff;
+    padding: 1rem;
+    border-radius: 50px;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-success-close:hover {
+    background: #3730a3;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(30, 27, 75, 0.2);
+}
+
+/* =========================================
+   FLASH USDT OVERHAUL & REAL IPHONE MOCKUP
+   ========================================= */
+.flash-usdt-section {
+    position: relative;
+    background: #020617;
+    overflow: hidden;
+    padding: 10rem 0;
+}
+
+/* Cyber Grid Background */
+.flash-usdt-section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-image: 
+        linear-gradient(rgba(16, 185, 129, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(16, 185, 129, 0.05) 1px, transparent 1px);
+    background-size: 50px 50px;
+    mask-image: radial-gradient(circle at 50% 50%, black, transparent 80%);
+    z-index: 0;
+}
+
+.flash-usdt-section::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%);
+    filter: blur(80px);
+    z-index: 0;
+}
+
+.usdt-container {
+    position: relative;
+    z-index: 2;
+}
+
+/* REAL iPhone Mockup Container */
+.iphone-wrapper {
+    perspective: 2000px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    position: relative;
+    padding: 2rem 0;
+}
+
+.iphone-mockup {
+    width: 320px;
+    height: 650px;
+    position: relative;
+    transform: rotateY(-20deg) rotateX(10deg);
+    transition: transform 0.1s ease-out;
+    transform-style: preserve-3d;
+}
+
+/* Fix for the "Black Box" background */
+.iphone-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    filter: drop-shadow(0 30px 60px rgba(0,0,0,0.8));
+    /* Using screen blend mode to effectively remove any black background from the JPG/PNG */
+    mix-blend-mode: screen; 
+    position: relative;
+    z-index: 1;
+}
+
+/* Pixel-Perfect Screen Overlay Alignment - REFINED FOR GENERATED ASSET */
+.iphone-screen-overlay {
+    position: absolute;
+    top: 2.1%;   
+    left: 6.2%;
+    right: 6.2%;
+    bottom: 2.1%;
+    background: #000;
+    border-radius: 46px; 
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: inset 0 0 15px 5px rgba(0,0,0,0.9); /* Blends UI with physical bezel */
+    z-index: 5;
+}
+
+/* Glow behind phone to hide edges further */
+.iphone-mockup::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 120%; height: 120%;
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%);
+    transform: translate(-50%, -50%) translateZ(-50px);
+    z-index: -1;
+    filter: blur(40px);
+}
+
+/* Dynamic Island Area */
+.dynamic-island {
+    position: absolute;
+    top: 10px; /* Aligned with physical punch-hole */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90px;
+    height: 30px;
+    background: #000;
+    border-radius: 20px;
+    z-index: 100;
+    transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 0.6rem;
+    overflow: hidden;
+    opacity: 1;
+}
+
+.dynamic-island.active {
+    width: 200px;
+    height: 60px;
+    background: #1e1b4b; /* Vibrant dynamic island */
+    border: 1px solid rgba(16, 185, 129, 0.5);
+}
+
+.di-content {
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.dynamic-island.active .di-content {
+    opacity: 1;
+    transform: scale(1);
+}
+/* STANDALONE FLOATING SCREEN: Pure digital card aesthetic */
+.usdt-graphic {
+    position: relative;
+    width: 100%;
+    margin: 40px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 650px;
+}
+
+.iphone-wrapper {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.standalone-screen {
+    width: 320px;
+    height: 580px; /* Reduced Height to prevent over-extension */
+    background: #020617;
+    border-radius: 40px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 
+        0 30px 60px rgba(0,0,0,0.6),
+        0 0 0 8px rgba(255,255,255,0.03), /* Subtle "Hardware" Frame */
+        0 0 40px rgba(16, 185, 129, 0.1); /* Ambient Glow */
+    border: 1px solid rgba(255,255,255,0.1);
+    z-index: 10;
+}
+
+/* UI Content Adjustments for Compact Height */
+:root {
+    --ios-v3-pad: 1.25rem;
+    --ios-v3-accent: #10b981;
+}
+
+.iphone-slides-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+
+.iphone-slide {
+    min-width: 100%;
+    height: 100%;
+    transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.wallet-ui-v3 {
+    height: 100%;
+    padding: var(--ios-v3-pad);
+    display: flex;
+    flex-direction: column;
+    color: #fff;
+    padding-top: 3.5rem; /* Space for Dynamic Island */
+}
+
+.ui-v3-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.65rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+}
+
+.v3-chip {
+    padding: 3px 8px;
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--ios-v3-accent);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.v3-pulse {
+    width: 5px; height: 5px;
+    background: var(--ios-v3-accent);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--ios-v3-accent);
+}
+
+.ui-v3-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 1.5rem;
+}
+
+.v3-avatar {
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 0.75rem;
+}
+
+.v3-greet { font-size: 0.6rem; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.v3-name { font-size: 1rem; font-weight: 800; display: block; }
+
+/* Balance Card: Compacted */
+.ui-v3-balance-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 24px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.v3-card-label { font-size: 0.7rem; color: #94a3b8; font-weight: 600; margin-bottom: 0.25rem; }
+.v3-balance-row { display: flex; align-items: flex-start; justify-content: center; gap: 3px; }
+.v3-currency { font-size: 1.25rem; font-weight: 800; color: var(--ios-v3-accent); margin-top: 6px; }
+.v3-amount { font-size: 2.5rem; font-weight: 900; letter-spacing: -1px; }
+
+.v3-trend { font-size: 0.75rem; color: var(--ios-v3-accent); font-weight: 800; display: block; margin-top: 4px; }
+
+/* Actions & List Adjustments */
+.ui-v3-actions {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 2rem;
+}
+
+.v3-act-btn { text-align: center; }
+.v3-act-btn i {
+    width: 48px; height: 48px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    margin: 0 auto 8px;
+    transition: 0.3s;
+}
+.v3-act-btn:hover i { background: var(--ios-v3-accent); transform: scale(1.05); }
+.v3-act-btn span { font-size: 0.65rem; font-weight: 700; color: #64748b; }
+
+.ui-v3-tx-list { display: flex; flex-direction: column; gap: 10px; }
+.v3-tx-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 4px 0;
+}
+
+.v3-tx-icon {
+    width: 38px; height: 38px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    color: var(--ios-v3-accent);
+}
+
+.v3-tx-body { flex: 1; }
+.v3-tx-title { display: block; font-size: 0.8rem; font-weight: 700; }
+.v3-tx-meta { font-size: 0.65rem; color: #64748b; font-weight: 500; }
+.v3-tx-value { font-size: 0.85rem; font-weight: 800; }
+.v3-tx-value.positive { color: var(--ios-v3-accent); }
+
+/* Stake V3 Slide Compact */
+.v3-stake-logo { font-size: 1.15rem; font-weight: 900; text-align: center; margin-bottom: 1.5rem; letter-spacing: -0.5px; }
+.v3-stake-hero { text-align: center; margin-bottom: 2rem; }
+.v3-hero-ring {
+    width: 70px; height: 70px;
+    border: 2px solid var(--ios-v3-accent);
+    border-radius: 50%;
+    margin: 0 auto 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.1);
+}
+.v3-hero-inner { font-size: 1.75rem; color: var(--ios-v3-accent); }
+
+.v3-stake-form { gap: 10px; margin-bottom: 1.5rem; }
+.v3-form-row {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 12px 15px;
+    border-radius: 14px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.v3-stake-terminal {
+    background: #000;
+    border-radius: 12px;
+    padding: 12px;
+    font-size: 0.6rem;
+    height: 70px;
+}
+
+/* UI Elements */
+.dynamic-island {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90px;
+    height: 28px;
+    background: #000;
+    border-radius: 20px;
+    z-index: 100;
+}
+
+.carousel-dots {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 100;
+}
+
+.dot {
+    width: 6px; height: 6px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+    transition: 0.3s;
+}
+
+.dot.active { width: 18px; border-radius: 3px; background: var(--ios-v3-accent); }
+
+.iphone-glass-reflection {
+    position: absolute;
+    top: -50%; left: -50%; width: 200%; height: 200%;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 50;
+}
+
+@media (max-width: 992px) {
+    .iphone-mockup {
+        width: 280px;
+        height: 570px;
+        transform: rotateY(0) rotateX(0);
+    }
+}
+
