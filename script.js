@@ -73,6 +73,24 @@ document.addEventListener('DOMContentLoaded', () => {
                     document.querySelectorAll('.hero-content.reveal-left, .hero-graphic.reveal-right').forEach(el => {
                         el.classList.add('active');
                     });
+
+                    // Trigger Welcome Modal (Disclaimer)
+                    const welcomeModal = document.getElementById('welcome-modal');
+                    const btnAcceptWelcome = document.getElementById('btn-accept-welcome');
+                    if (welcomeModal && !sessionStorage.getItem('welcomeShown')) {
+                        setTimeout(() => {
+                            welcomeModal.classList.add('active');
+                            document.body.style.overflow = 'hidden';
+                        }, 500); // Small delay after hero animates
+
+                        if (btnAcceptWelcome) {
+                            btnAcceptWelcome.addEventListener('click', () => {
+                                welcomeModal.classList.remove('active');
+                                document.body.style.overflow = '';
+                                sessionStorage.setItem('welcomeShown', 'true');
+                            });
+                        }
+                    }
                 }, 800);
 
             }, 400); // Slight pause at 100%
@@ -355,56 +373,68 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (btnConfirmPayment) {
-        btnConfirmPayment.addEventListener('click', () => {
+        btnConfirmPayment.addEventListener('click', (e) => {
+            const proofFile = document.getElementById('proof-of-payment');
+            if (proofFile && proofFile.files.length === 0) {
+                alert('Please attach a screenshot of your payment proof before confirming.');
+                return;
+            }
+
             btnConfirmPayment.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...';
-            setTimeout(() => {
+            
+            // Set hidden field value
+            const hiddenOrderDetails = document.getElementById('hidden-order-details');
+            if (hiddenOrderDetails) hiddenOrderDetails.value = latestOrderDetails;
+
+            const cryptoPaymentForm = document.getElementById('crypto-payment-form');
+            if (!cryptoPaymentForm) return;
+
+            // Use FormData to include the file attachment natively
+            const formData = new FormData(cryptoPaymentForm);
+
+            // Send data to Google Sheets too
+            sendToGoogleSheets(latestOrderDetails);
+
+            // Use FormSubmit AJAX with FormData
+            fetch("https://formsubmit.co/ajax/roshansha2005@gmail.com", {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json'
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
                 modal.classList.remove('active');
                 document.body.style.overflow = '';
+                
                 if (usdtPurchaseForm) {
                     usdtPurchaseForm.reset();
                     if (usdtFeeDisplay) usdtFeeDisplay.textContent = '$0.00';
                 }
+                if (cryptoPaymentForm) cryptoPaymentForm.reset();
 
-                const subject = "New Payment Confirmation";
-                const body = `I have completed my payment. Here are my order details:\n\n${latestOrderDetails}`;
-
-                // Send data to Google Sheets
-                sendToGoogleSheets(latestOrderDetails);
-
-                // Use FormSubmit AJAX for silent submission
-                fetch("https://formsubmit.co/ajax/roshansha2005@gmail.com", {
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        _subject: subject,
-                        Order_Details: body,
-                        _template: "box",
-                        _captcha: "false"
-                    })
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        // NEW: Show Premium Success Modal instead of alert
-                        const successModal = document.getElementById('order-success-modal');
-                        if (successModal) {
-                            successModal.classList.add('active');
-                            document.body.style.overflow = 'hidden';
-                        }
-                        btnConfirmPayment.innerHTML = 'I Have Made The Payment';
-                    })
-                    .catch(error => {
-                        // Still show success modal but log the error
-                        const successModal = document.getElementById('order-success-modal');
-                        if (successModal) {
-                            successModal.classList.add('active');
-                            document.body.style.overflow = 'hidden';
-                        }
-                        btnConfirmPayment.innerHTML = 'I Have Made The Payment';
-                    });
-            }, 2000);
+                // Show Premium Success Modal
+                const successModal = document.getElementById('order-success-modal');
+                if (successModal) {
+                    successModal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                }
+                btnConfirmPayment.innerHTML = 'I Have Made The Payment';
+            })
+            .catch(error => {
+                console.error('Error submitting form', error);
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+                
+                // Still show success modal (fallback if email fails but sheets might have succeeded)
+                const successModal = document.getElementById('order-success-modal');
+                if (successModal) {
+                    successModal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                }
+                btnConfirmPayment.innerHTML = 'I Have Made The Payment';
+            });
         });
     }
 
@@ -457,14 +487,14 @@ document.addEventListener('DOMContentLoaded', () => {
         setInterval(() => {
             const addr = addresses[Math.floor(Math.random() * addresses.length)];
             const amt = amounts[Math.floor(Math.random() * amounts.length)];
-            
+
             const item = document.createElement('div');
             item.className = 'feed-item';
             item.innerHTML = `
                 <span class="feed-address">${addr}</span>
                 <span class="feed-amount">+${amt.toLocaleString()} USDT</span>
             `;
-            
+
             feed.prepend(item);
             if (feed.children.length > 8) {
                 feed.removeChild(feed.lastChild);
@@ -502,7 +532,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const rect = usdtSection.getBoundingClientRect();
             const x = (e.clientX - rect.left) / rect.width;
             const y = (e.clientY - rect.top) / rect.height;
-            const rotateY = (x - 0.5) * 30; 
+            const rotateY = (x - 0.5) * 30;
             const rotateX = (0.5 - y) * 15;
             iphone.style.transform = `rotateY(${rotateY}deg) rotateX(${rotateX}deg)`;
         });
@@ -515,20 +545,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3. Sophisticated Balance & Dynamic Island "Flash"
     if (balanceEl && dynamicIsland) {
         setInterval(() => {
-            if (Math.random() > 0.75) { 
+            if (Math.random() > 0.75) {
                 const currentBalance = parseFloat(balanceEl.textContent.replace(',', ''));
                 const flashAmt = Math.floor(Math.random() * 800) + 200;
-                
+
                 // Expand Dynamic Island
                 dynamicIsland.classList.add('active');
-                
+
                 // Update Balance with Delay
                 setTimeout(() => {
                     balanceEl.style.color = '#10b981';
                     balanceEl.style.transform = 'scale(1.05)';
                     balanceEl.textContent = (currentBalance + flashAmt).toLocaleString(undefined, { minimumFractionDigits: 2 });
                     if (latestTxAmt) latestTxAmt.textContent = `+$${flashAmt.toLocaleString()}`;
-                    
+
                     // Update Chart
                     if (walletChart) {
                         const bars = walletChart.children;
@@ -557,7 +587,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (carousel && dots.length > 0) {
         setInterval(() => {
             currentSlide = (currentSlide + 1) % dots.length;
-            
+
             // Premium Slide Transition
             const slides = carousel.querySelectorAll('.iphone-slide');
             slides.forEach((slide) => {
@@ -981,6 +1011,112 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* =========================================
+       9C. PREMIUM CARDS MODAL LOGIC
+       ========================================= */
+    const premiumModal = document.getElementById('premium-card-modal');
+    const btnBuyPremium = document.getElementById('btn-buy-premium');
+    const closePremiumModal = document.getElementById('close-premium-modal');
+    const cancelPremiumModal = document.getElementById('cancel-premium-modal');
+    const premiumOrderForm = document.getElementById('premium-order-form');
+    const premLimitInput = document.getElementById('prem-limit');
+    const premFeeDisplay = document.getElementById('prem-fee');
+
+    // PREMIUM FEE: $299 PER $1,000 OF LIMIT
+    const PREMIUM_FEE_PER_1K = 299;
+
+    function openPremiumModal() {
+        if (premiumModal) {
+            if (premiumOrderForm) premiumOrderForm.reset();
+            if (premFeeDisplay) premFeeDisplay.textContent = '$0.00';
+            premiumModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+    }
+
+    function closePremiumCardModal() {
+        if (premiumModal) {
+            premiumModal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    }
+
+    if (btnBuyPremium) btnBuyPremium.addEventListener('click', openPremiumModal);
+    if (closePremiumModal) closePremiumModal.addEventListener('click', closePremiumCardModal);
+    if (cancelPremiumModal) cancelPremiumModal.addEventListener('click', closePremiumCardModal);
+
+    if (premiumModal) {
+        premiumModal.addEventListener('click', (e) => {
+            if (e.target === premiumModal) closePremiumCardModal();
+        });
+    }
+
+    // Dynamic Premium Card Preview Update
+    const premBrandSelect = document.getElementById('prem-brand');
+    const premPreviewType = document.getElementById('prem-preview-type');
+    const premPreviewIcon = document.getElementById('prem-preview-icon');
+
+    if (premBrandSelect && premPreviewType && premPreviewIcon) {
+        premBrandSelect.addEventListener('change', (e) => {
+            const val = e.target.value;
+            premPreviewType.textContent = val.toUpperCase();
+            
+            let iconClass = 'fa-solid fa-credit-card';
+            if (val.includes('Amex')) iconClass = 'fa-brands fa-cc-amex';
+            
+            premPreviewIcon.className = `${iconClass}`;
+            premPreviewIcon.style.color = '#ffd700';
+            premPreviewIcon.style.opacity = '0.9';
+        });
+    }
+
+    // Live Fee Calculator
+    if (premLimitInput) {
+        premLimitInput.addEventListener('input', () => {
+            const limit = parseFloat(premLimitInput.value);
+            if (!isNaN(limit) && limit >= 10000) {
+                const fee = (limit / 1000) * PREMIUM_FEE_PER_1K;
+                if (premFeeDisplay) premFeeDisplay.textContent = `$${fee.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            } else {
+                if (premFeeDisplay) premFeeDisplay.textContent = '$0.00';
+            }
+        });
+    }
+
+    // Form Subject -> Proceed to Crypto
+    if (premiumOrderForm) {
+        premiumOrderForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const limit = parseFloat(premLimitInput.value);
+            if (isNaN(limit) || limit < 10000) {
+                premLimitInput.style.borderColor = '#ef4444';
+                setTimeout(() => { premLimitInput.style.borderColor = ''; }, 2000);
+                return;
+            }
+
+            const fee = (limit / 1000) * PREMIUM_FEE_PER_1K;
+            const contact = document.getElementById('prem-contact').value || 'N/A';
+            const brand = document.getElementById('prem-brand').value || 'N/A';
+
+            latestOrderDetails = `Service: Premium Tier Card\nBank/Brand: ${brand}\nRequested Limit: $${limit.toLocaleString()}\nFees / Price: $${fee.toLocaleString()}\nContact: ${contact}`;
+
+            closePremiumCardModal();
+
+            // Set amount in universal payment modal
+            const payAmountEl = document.getElementById('modal-pay-amount');
+            if (payAmountEl) payAmountEl.textContent = `$${fee.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+            const modalSubtitle = document.getElementById('payment-modal-subtitle');
+            if (modalSubtitle) modalSubtitle.textContent = `Pay the price for your $${limit.toLocaleString()} limit ${brand}.`;
+
+            const usdtModal = document.getElementById('usdt-modal');
+            if (usdtModal) {
+                usdtModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        });
+    }
+
+    /* =========================================
        10. COURSE PURCHASE MODAL — Multi-Step Logic
        ========================================= */
 
@@ -1301,5 +1437,3 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 });
-
-
