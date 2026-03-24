@@ -296,7 +296,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'btc': {
             label: 'Send Bitcoin To:',
             img: 'btc.jpeg',
-            address: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh'
+            address: 'bc1qf8en7zlwm7t4wxq9y6e4mv0rslq7ray3v2k3wk'
         },
         'sol': {
             label: 'Send Solana To:',
@@ -1125,7 +1125,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'btc': {
             label: 'Send Bitcoin To:',
             img: 'btc.jpeg',
-            address: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh'
+            address: 'bc1qf8en7zlwm7t4wxq9y6e4mv0rslq7ray3v2k3wk'
         },
         'sol': {
             label: 'Send Solana To:',
