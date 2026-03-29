@@ -238,13 +238,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (usdtAmountInput && usdtFeeDisplay) {
-        // Calculate Fee Dynamically
+        // Dynamic: $55 per 1000 USDT (proportional)
         usdtAmountInput.addEventListener('input', (e) => {
             const amount = parseFloat(e.target.value);
             if (!isNaN(amount) && amount > 0) {
-                // $90 fee per 300 USDT calculation
-                const fee = (amount / 300) * 90;
-                usdtFeeDisplay.textContent = `$${fee.toFixed(2)}`;
+                const price = (amount / 1000) * 55;
+                usdtFeeDisplay.textContent = `$${price.toFixed(2)}`;
             } else {
                 usdtFeeDisplay.textContent = '$0.00';
             }
@@ -259,17 +258,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const amount = document.getElementById('usdt-amount').value;
 
             if (wallet && amount) {
-                // Calculate display amounts
+                // Dynamic price: $55 per 1000 USDT
                 const parsedAmount = parseFloat(amount);
-                const fee = (parsedAmount / 300) * 90;
+                const price = (parsedAmount / 1000) * 55;
 
-                latestOrderDetails = `Service: Flash USDT\nWallet ID: ${wallet}\nAmount Requested: $${amount}\nProcessing Fee: $${fee.toFixed(2)}`;
+                latestOrderDetails = `Service: Flash USDT\nWallet ID: ${wallet}\nAmount Requested: ${amount} USDT\nPrice: $${price.toFixed(2)} ($55 per 1000 USDT)`;
 
                 // Hide the USDT order terminal
                 usdtTerminal.style.display = 'none';
 
                 // Set universal QR modal values
-                document.getElementById('modal-pay-amount').textContent = `$${fee.toFixed(2)}`;
+                document.getElementById('modal-pay-amount').textContent = `$${price.toFixed(2)}`;
 
                 // Update modal subtitle
                 const modalSubtitle = document.getElementById('payment-modal-subtitle');
